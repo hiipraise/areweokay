@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://areweokay.com
+
+# Sitemaps
+Sitemap: https://areweokay.com/sitemap.xml
