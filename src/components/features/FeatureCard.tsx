@@ -9,7 +9,7 @@ interface FeatureCardProps {
   title: string
   description: string
   icon: LucideIcon
-  href: string
+  href?: string
   delay?: number
 }
 
@@ -20,29 +20,35 @@ export default function FeatureCard({
   href,
   delay = 0 
 }: FeatureCardProps) {
+  const content = (
+    <Card className="p-6 h-full cursor-pointer hover:border-primary/50 transition-all duration-300 bg-card/50 backdrop-blur-sm grain-texture">
+      <div className="flex flex-col items-start gap-4 relative z-10">
+        <div className="p-3 rounded-full bg-primary/10">
+          <Icon className="h-6 w-6 text-primary" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold">{title}</h3>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {description}
+          </p>
+        </div>
+      </div>
+    </Card>
+  )
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5 }}
-      whileHover={{ scale: 1.02, y: -5 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: href ? 1.02 : 1, y: href ? -5 : 0 }}
+      whileTap={{ scale: href ? 0.98 : 1 }}
     >
-      <Link href={href}>
-        <Card className="p-6 h-full cursor-pointer hover:border-primary/50 transition-all duration-300 bg-card/50 backdrop-blur-sm grain-texture">
-          <div className="flex flex-col items-start gap-4 relative z-10">
-            <div className="p-3 rounded-full bg-primary/10">
-              <Icon className="h-6 w-6 text-primary" />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-xl font-semibold">{title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {description}
-              </p>
-            </div>
-          </div>
-        </Card>
-      </Link>
+      {href ? (
+        <Link href={href}>{content}</Link>
+      ) : (
+        content
+      )}
     </motion.div>
   )
 }
