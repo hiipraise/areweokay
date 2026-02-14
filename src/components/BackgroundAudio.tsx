@@ -6,24 +6,28 @@ import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 
 export default function BackgroundAudio() {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [hasInteracted, setHasInteracted] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(true) // start as playing
   const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
-    if (hasInteracted && audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play().catch(console.error)
-      } else {
-        audioRef.current.pause()
-      }
+    if (audioRef.current) {
+      audioRef.current.volume = 0.5 // optional: set initial volume
+      audioRef.current.play().catch((err) => {
+        console.warn('Autoplay failed:', err)
+        setIsPlaying(false) // if autoplay blocked, set paused
+      })
     }
-  }, [isPlaying, hasInteracted])
+  }, [])
 
   const toggleAudio = () => {
-    if (!hasInteracted) {
-      setHasInteracted(true)
+    if (!audioRef.current) return
+
+    if (isPlaying) {
+      audioRef.current.pause()
+    } else {
+      audioRef.current.play().catch(console.error)
     }
+
     setIsPlaying(!isPlaying)
   }
 
@@ -36,6 +40,7 @@ export default function BackgroundAudio() {
       >
         <source src="/sounds/ambient.mp3" type="audio/mpeg" />
       </audio>
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
