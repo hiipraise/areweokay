@@ -3,7 +3,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Share2, Heart, Copy, Check } from 'lucide-react'
+import { ArrowLeft, Share2, Heart, Copy, Check, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -11,6 +11,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 export default function AppreciationPage() {
   const [message, setMessage] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [sessionId, setSessionId] = useState('')
   const [shareLink, setShareLink] = useState('')
   const [copied, setCopied] = useState(false)
 
@@ -38,6 +39,7 @@ export default function AppreciationPage() {
         throw new Error('Failed to create session')
       }
 
+      setSessionId(sessionData.sessionId)
       const link = `${window.location.origin}/appreciation/${sessionData.sessionId}`
       setShareLink(link)
     } catch (error) {
@@ -120,13 +122,16 @@ export default function AppreciationPage() {
                       {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     </Button>
                   </div>
-                  <Button
-                    onClick={handleCopy}
-                    className="w-full h-12 text-lg"
-                  >
+                  <Button onClick={handleCopy} className="w-full h-12 text-lg">
                     {copied ? 'Copied!' : 'Copy Link'}
                     <Share2 className="ml-2 h-5 w-5" />
                   </Button>
+                  <Link href={`/responses/${sessionId}`} className="block">
+                    <Button variant="outline" className="w-full h-11">
+                      <BarChart3 className="mr-2 h-4 w-4" />
+                      View Responses
+                    </Button>
+                  </Link>
                 </motion.div>
               ) : (
                 <div className="pt-4 border-t">

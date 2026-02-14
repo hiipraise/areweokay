@@ -3,7 +3,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Plus, X, Share2, Copy, Check } from 'lucide-react'
+import { ArrowLeft, Plus, X, Share2, Copy, Check, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -18,6 +18,7 @@ export default function KnowMePage() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [currentQuestion, setCurrentQuestion] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [sessionId, setSessionId] = useState('')
   const [shareLink, setShareLink] = useState('')
   const [copied, setCopied] = useState(false)
 
@@ -56,6 +57,7 @@ export default function KnowMePage() {
         throw new Error('Failed to create session')
       }
 
+      setSessionId(sessionData.sessionId)
       const link = `${window.location.origin}/know-me/${sessionData.sessionId}`
       setShareLink(link)
     } catch (error) {
@@ -75,10 +77,7 @@ export default function KnowMePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 grain-texture">
       <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <Link href="/">
             <Button variant="ghost" className="mb-6">
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -87,11 +86,7 @@ export default function KnowMePage() {
           </Link>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <Card className="grain-texture">
             <CardHeader>
               <CardTitle className="text-3xl">Does My Babe Really Know Me?</CardTitle>
@@ -113,8 +108,8 @@ export default function KnowMePage() {
                     onKeyPress={(e) => e.key === 'Enter' && addQuestion()}
                     disabled={questions.length >= 10}
                   />
-                  <Button 
-                    onClick={addQuestion} 
+                  <Button
+                    onClick={addQuestion}
                     disabled={questions.length >= 10 || !currentQuestion.trim()}
                     size="icon"
                   >
@@ -132,12 +127,7 @@ export default function KnowMePage() {
                       className="flex items-center gap-2 p-3 bg-muted rounded-lg"
                     >
                       <span className="text-sm flex-1">{q.text}</span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeQuestion(q.id)}
-                        className="h-8 w-8"
-                      >
+                      <Button variant="ghost" size="icon" onClick={() => removeQuestion(q.id)} className="h-8 w-8">
                         <X className="h-4 w-4" />
                       </Button>
                     </motion.div>
@@ -164,6 +154,12 @@ export default function KnowMePage() {
                     {copied ? 'Copied!' : 'Copy Link'}
                     <Share2 className="ml-2 h-5 w-5" />
                   </Button>
+                  <Link href={`/responses/${sessionId}`} className="block">
+                    <Button variant="outline" className="w-full h-11">
+                      <BarChart3 className="mr-2 h-4 w-4" />
+                      View Responses
+                    </Button>
+                  </Link>
                 </motion.div>
               ) : (
                 <div className="pt-4 border-t">

@@ -3,7 +3,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Plus, X, Share2, Users, Copy, Check } from 'lucide-react'
+import { ArrowLeft, Plus, X, Share2, Users, Copy, Check, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -18,6 +18,7 @@ export default function StrangerComparisonPage() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [currentQuestion, setCurrentQuestion] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [sessionId, setSessionId] = useState('')
   const [shareLink, setShareLink] = useState('')
   const [copied, setCopied] = useState(false)
 
@@ -57,6 +58,7 @@ export default function StrangerComparisonPage() {
         throw new Error('Failed to create session')
       }
 
+      setSessionId(sessionData.sessionId)
       const link = `${window.location.origin}/stranger-comparison/${sessionData.sessionId}`
       setShareLink(link)
     } catch (error) {
@@ -76,10 +78,7 @@ export default function StrangerComparisonPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 grain-texture">
       <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <Link href="/">
             <Button variant="ghost" className="mb-6">
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -88,11 +87,7 @@ export default function StrangerComparisonPage() {
           </Link>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <Card className="grain-texture">
             <CardHeader>
               <CardTitle className="text-3xl flex items-center gap-2">
@@ -100,7 +95,7 @@ export default function StrangerComparisonPage() {
                 <Users className="h-8 w-8 text-primary" />
               </CardTitle>
               <CardDescription className="text-base">
-                Create questions and see if strangers know you better than your partner. 
+                Create questions and see if strangers know you better than your partner.
                 Public sharing means anyone can answer.
               </CardDescription>
             </CardHeader>
@@ -117,8 +112,8 @@ export default function StrangerComparisonPage() {
                     onKeyPress={(e) => e.key === 'Enter' && addQuestion()}
                     disabled={questions.length >= 10}
                   />
-                  <Button 
-                    onClick={addQuestion} 
+                  <Button
+                    onClick={addQuestion}
                     disabled={questions.length >= 10 || !currentQuestion.trim()}
                     size="icon"
                   >
@@ -136,12 +131,7 @@ export default function StrangerComparisonPage() {
                       className="flex items-center gap-2 p-3 bg-muted rounded-lg"
                     >
                       <span className="text-sm flex-1">{q.text}</span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeQuestion(q.id)}
-                        className="h-8 w-8"
-                      >
+                      <Button variant="ghost" size="icon" onClick={() => removeQuestion(q.id)} className="h-8 w-8">
                         <X className="h-4 w-4" />
                       </Button>
                     </motion.div>
@@ -151,8 +141,8 @@ export default function StrangerComparisonPage() {
 
               <div className="p-4 bg-primary/10 rounded-lg">
                 <p className="text-sm">
-                  <strong>How it works:</strong> Your questions will be publicly visible. 
-                  Both your partner and strangers can answer. You can then compare the responses 
+                  <strong>How it works:</strong> Your questions will be publicly visible.
+                  Both your partner and strangers can answer. You can then compare the responses
                   to see who really knows you better.
                 </p>
               </div>
@@ -176,6 +166,12 @@ export default function StrangerComparisonPage() {
                     {copied ? 'Copied!' : 'Copy & Share'}
                     <Share2 className="ml-2 h-5 w-5" />
                   </Button>
+                  <Link href={`/responses/${sessionId}`} className="block">
+                    <Button variant="outline" className="w-full h-11">
+                      <BarChart3 className="mr-2 h-4 w-4" />
+                      View Responses
+                    </Button>
+                  </Link>
                 </motion.div>
               ) : (
                 <div className="pt-4 border-t">
