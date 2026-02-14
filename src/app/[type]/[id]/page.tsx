@@ -1,103 +1,109 @@
 // src/app/[type]/[id]/page.tsx
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { useParams } from 'next/navigation'
-import { Heart, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useParams } from "next/navigation";
+import { Heart, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 
 interface Question {
-  id: string
-  question: string
-  answer?: string
+  id: string;
+  question: string;
+  answer?: string;
 }
 
 interface SessionData {
-  sessionId: string
-  type: string
-  questions: Question[]
-  expression?: string
-  appreciationMessage?: string
-  isPublic: boolean
+  sessionId: string;
+  type: string;
+  questions: Question[];
+  expression?: string;
+  appreciationMessage?: string;
+  isPublic: boolean;
 }
 
 export default function ViewSessionPage() {
-  const params = useParams()
-  const [session, setSession] = useState<SessionData | null>(null)
-  const [answers, setAnswers] = useState<Record<string, string>>({})
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
+  const params = useParams();
+  const [session, setSession] = useState<SessionData | null>(null);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (params.id) {
-      fetchSession()
+      fetchSession();
     }
-  }, [params.id])
+  }, [params.id]);
 
   const fetchSession = async () => {
     try {
-      const res = await fetch(`/api/session/${params.id}`)
-      const data = await res.json()
-      
+      const res = await fetch(`/api/session/${params.id}`);
+      const data = await res.json();
+
       if (data.success) {
-        setSession(data.session)
+        setSession(data.session);
       }
     } catch (error) {
-      console.error('Failed to fetch session:', error)
+      console.error("Failed to fetch session:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleAnswerChange = (questionId: string, answer: string) => {
-    setAnswers(prev => ({ ...prev, [questionId]: answer }))
-  }
+    setAnswers((prev) => ({ ...prev, [questionId]: answer }));
+  };
 
   const handleSubmit = async () => {
-    if (!session) return
+    if (!session) return;
 
-    const answerArray = session.questions.map(q => ({
+    const answerArray = session.questions.map((q) => ({
       id: q.id,
       question: q.question,
-      answer: answers[q.id] || '',
-      answeredBy: session.isPublic ? 'stranger' : 'partner'
-    }))
+      answer: answers[q.id] || "",
+      answeredBy: session.isPublic ? "stranger" : "partner",
+    }));
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
       const res = await fetch(`/api/session/${params.id}/answer`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           answers: answerArray,
-          answererType: session.isPublic ? 'stranger' : 'partner',
+          answererType: session.isPublic ? "stranger" : "partner",
         }),
-      })
+      });
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (data.success) {
-        setSubmitted(true)
+        setSubmitted(true);
       }
     } catch (error) {
-      console.error('Failed to submit answers:', error)
-      alert('Something went wrong. Please try again.')
+      console.error("Failed to submit answers:", error);
+      alert("Something went wrong. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    )
+    );
   }
 
   if (!session) {
@@ -109,7 +115,7 @@ export default function ViewSessionPage() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   if (submitted) {
@@ -137,20 +143,27 @@ export default function ViewSessionPage() {
           </Card>
         </motion.div>
       </div>
-    )
+    );
   }
 
   const getTitle = () => {
     switch (session.type) {
-      case 'know-me': return 'Do You Really Know Them?'
-      case 'stranger-comparison': return 'Do You Know This Person?'
-      case 'expression': return 'A Message For You'
-      case 'appreciation': return 'You Are Appreciated'
-      case 'breakup': return 'Relationship Reflection'
-      case 'safe-love': return 'Is This Love Safe?'
-      default: return 'Answer These Questions'
+      case "know-me":
+        return "Do You Really Know Them?";
+      case "stranger-comparison":
+        return "Do You Know This Person?";
+      case "expression":
+        return "A Message For You";
+      case "appreciation":
+        return "You Are Appreciated";
+      case "breakup":
+        return "Relationship Reflection";
+      case "safe-love":
+        return "Is This Love Safe?";
+      default:
+        return "Answer These Questions";
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 grain-texture">
@@ -163,21 +176,26 @@ export default function ViewSessionPage() {
             <CardHeader>
               <CardTitle className="text-3xl">{getTitle()}</CardTitle>
               <CardDescription className="text-base">
-                {session.type === 'expression' || session.type === 'appreciation' 
-                  ? 'Someone has shared something special with you'
-                  : 'Answer honestly. Your responses are completely anonymous.'}
+                {session.type === "expression" ||
+                session.type === "appreciation"
+                  ? "Someone has shared something special with you"
+                  : "Answer honestly. Your responses are completely anonymous."}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {session.expression && (
                 <div className="p-6 bg-primary/10 rounded-lg">
-                  <p className="text-lg italic leading-relaxed">{session.expression}</p>
+                  <p className="text-lg italic leading-relaxed">
+                    {session.expression}
+                  </p>
                 </div>
               )}
 
               {session.appreciationMessage && (
                 <div className="p-6 bg-primary/10 rounded-lg">
-                  <p className="text-lg italic leading-relaxed">{session.appreciationMessage}</p>
+                  <p className="text-lg italic leading-relaxed">
+                    {session.appreciationMessage}
+                  </p>
                 </div>
               )}
 
@@ -195,8 +213,10 @@ export default function ViewSessionPage() {
                       </label>
                       <Input
                         placeholder="Your answer..."
-                        value={answers[question.id] || ''}
-                        onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                        value={answers[question.id] || ""}
+                        onChange={(e) =>
+                          handleAnswerChange(question.id, e.target.value)
+                        }
                       />
                     </motion.div>
                   ))}
@@ -210,7 +230,7 @@ export default function ViewSessionPage() {
                     disabled={isSubmitting || Object.keys(answers).length === 0}
                     className="w-full h-12 text-lg"
                   >
-                    {isSubmitting ? 'Submitting...' : 'Submit Your Answers'}
+                    {isSubmitting ? "Submitting..." : "Submit Your Answers"}
                   </Button>
                   <p className="text-xs text-center text-muted-foreground mt-2">
                     Answers are 100% anonymous.
@@ -222,5 +242,5 @@ export default function ViewSessionPage() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }
