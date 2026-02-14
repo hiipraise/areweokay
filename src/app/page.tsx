@@ -75,13 +75,8 @@ export default function HomePage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.6 }}
           >
-            <div className="bg-primary/10 px-6 py-2 rounded-full">
-              <p className="text-sm font-medium">
-                One-time payment: ₦500
-              </p>
-            </div>
             <p className="text-xs text-muted-foreground">
-              100% anonymous • Recipient answers for free
+              anonymous
             </p>
           </motion.div>
         </motion.div>
