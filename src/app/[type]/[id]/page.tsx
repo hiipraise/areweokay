@@ -4,7 +4,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
-import { Heart, Loader2 } from "lucide-react";
+import { Heart, Loader2, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -110,8 +111,14 @@ export default function ViewSessionPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
         <Card className="max-w-md">
-          <CardContent className="pt-6 text-center">
+          <CardContent className="pt-6 text-center space-y-4">
             <p className="text-lg">Session not found</p>
+            <Link href="/">
+              <Button variant="outline">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Home
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
@@ -124,10 +131,10 @@ export default function ViewSessionPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md"
+          className="max-w-md w-full mx-4"
         >
           <Card className="text-center grain-texture">
-            <CardContent className="pt-6 pb-6">
+            <CardContent className="pt-8 pb-8 space-y-4">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -135,10 +142,18 @@ export default function ViewSessionPage() {
               >
                 <Heart className="h-16 w-16 text-primary mx-auto mb-4" />
               </motion.div>
-              <h2 className="text-2xl font-bold mb-2">Thank You!</h2>
+              <h2 className="text-2xl font-bold">Thank You!</h2>
               <p className="text-muted-foreground">
                 Your answers have been submitted. The truth awaits.
               </p>
+              <div className="pt-2">
+                <Link href="/">
+                  <Button variant="outline" className="w-full">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Home
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -169,6 +184,19 @@ export default function ViewSessionPage() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 grain-texture">
       <div className="container mx-auto px-4 py-8 max-w-3xl">
         <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="mb-6"
+        >
+          <Link href="/">
+            <Button variant="ghost">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Home
+            </Button>
+          </Link>
+        </motion.div>
+
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
@@ -176,8 +204,7 @@ export default function ViewSessionPage() {
             <CardHeader>
               <CardTitle className="text-3xl">{getTitle()}</CardTitle>
               <CardDescription className="text-base">
-                {session.type === "expression" ||
-                session.type === "appreciation"
+                {session.type === "expression" || session.type === "appreciation"
                   ? "Someone has shared something special with you"
                   : "Answer honestly. Your responses are completely anonymous."}
               </CardDescription>
