@@ -26,6 +26,7 @@ export async function GET(
       session: {
         sessionId: session.sessionId,
         type: session.type,
+        creatorUsername: session.creatorUsername,
         questions: session.questions,
         expression: session.expression,
         appreciationMessage: session.appreciationMessage,

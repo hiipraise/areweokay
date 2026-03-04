@@ -3,10 +3,11 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Share2, Shield, RefreshCw, Copy, Check, BarChart3 } from 'lucide-react'
+import { ArrowLeft, Share2, Shield, RefreshCw, Copy, Check } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { ensureUsername } from '@/lib/client-username'
 import { getRandomQuestions } from '@/lib/questions'
 
 export default function SafeLovePage() {
@@ -26,12 +27,15 @@ export default function SafeLovePage() {
       alert('Please generate questions first')
       return
     }
+    const username = await ensureUsername()
+    if (!username) return
+
     setIsProcessing(true)
     try {
       const sessionRes = await fetch('/api/session/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'safe-love', questions }),
+        body: JSON.stringify({ type: 'safe-love', questions, username }),
       })
       const sessionData = await sessionRes.json()
       if (!sessionData.success) throw new Error('Failed to create session')
@@ -92,9 +96,6 @@ export default function SafeLovePage() {
                     <Button size="sm" variant="outline" onClick={handleCopy}>{copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}</Button>
                   </div>
                   <Button onClick={handleCopy} className="w-full h-12 text-lg">{copied ? 'Copied!' : 'Copy Link'}<Share2 className="ml-2 h-5 w-5" /></Button>
-                  <Link href={`/responses/${sessionId}`} className="block">
-                    <Button variant="outline" className="w-full h-11"><BarChart3 className="mr-2 h-4 w-4" />View Responses</Button>
-                  </Link>
                 </motion.div>
               ) : (
                 <div className="pt-4 border-t">

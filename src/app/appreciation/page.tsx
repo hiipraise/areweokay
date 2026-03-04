@@ -7,6 +7,7 @@ import { ArrowLeft, Share2, Heart, Copy, Check, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { ensureUsername } from '@/lib/client-username'
 
 export default function AppreciationPage() {
   const [message, setMessage] = useState('')
@@ -20,6 +21,9 @@ export default function AppreciationPage() {
       alert('Please provide an appreciation message')
       return
     }
+
+    const username = await ensureUsername()
+    if (!username) return
 
     setIsProcessing(true)
 

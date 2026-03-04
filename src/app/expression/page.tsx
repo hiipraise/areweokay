@@ -7,6 +7,7 @@ import { ArrowLeft, Share2, Copy, Check, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { ensureUsername } from '@/lib/client-username'
 
 export default function ExpressionPage() {
   const [expression, setExpression] = useState('')
@@ -17,12 +18,15 @@ export default function ExpressionPage() {
 
   const handleCreate = async () => {
     if (!expression.trim()) { alert('Please provide your expression'); return }
+    const username = await ensureUsername()
+    if (!username) return
+
     setIsProcessing(true)
     try {
       const sessionRes = await fetch('/api/session/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'expression', expression }),
+        body: JSON.stringify({ type: 'expression', expression, username }),
       })
       const sessionData = await sessionRes.json()
       if (!sessionData.success) throw new Error('Failed to create session')

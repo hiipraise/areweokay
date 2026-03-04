@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { ensureUsername } from '@/lib/client-username'
 
 interface Question {
   id: string
@@ -39,6 +40,9 @@ export default function KnowMePage() {
       return
     }
 
+    const username = await ensureUsername()
+    if (!username) return
+
     setIsProcessing(true)
 
     try {
@@ -48,6 +52,7 @@ export default function KnowMePage() {
         body: JSON.stringify({
           type: 'know-me',
           questions: questions.map(q => ({ id: q.id, question: q.text })),
+          username,
         }),
       })
 

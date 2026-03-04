@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider, ThemeToggle } from '@/components/ThemeProvider'
-import AnalyticsDisplay from '@/components/AnalyticsDisplay'
-import GenderSelectionModal from '@/components/GenderSelectionModal'
 
 export const metadata: Metadata = {
   title: 'AreWeOkay - Not every love is forever. Find your truth.',
@@ -24,8 +22,6 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider>
           <ThemeToggle />
-          <AnalyticsDisplay />
-          <GenderSelectionModal />
           {children}
         </ThemeProvider>
       </body>

@@ -15,6 +15,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { ensureUsername } from "@/lib/client-username";
 
 interface Question {
   id: string;
@@ -67,6 +68,9 @@ export default function ViewSessionPage() {
   const handleSubmit = async () => {
     if (!session) return;
 
+    const username = await ensureUsername();
+    if (!username) return;
+
     const answerArray = session.questions.map((q) => ({
       id: q.id,
       question: q.question,
@@ -83,6 +87,7 @@ export default function ViewSessionPage() {
         body: JSON.stringify({
           answers: answerArray,
           answererType: session.isPublic ? "stranger" : "partner",
+          username,
         }),
       });
 
