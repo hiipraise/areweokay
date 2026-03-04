@@ -1,33 +1,46 @@
+const USERNAME_KEY = 'awo_username';
+const USERNAME_EXPIRY_KEY = 'awo_username_expiry';
+const SESSION_LENGTH_MS = 1000 * 60 * 60 * 12;
+
+type UsernameResolve = (username: string | null) => void;
+
+export function getStoredUsername(): string | null {
+  if (typeof window === 'undefined') return null;
+
+  const username = localStorage.getItem(USERNAME_KEY);
+  const expiry = Number(localStorage.getItem(USERNAME_EXPIRY_KEY) || '0');
+
+  if (!username || !expiry || Date.now() > expiry) {
+    clearStoredUsername();
+    return null;
+  }
+
+  return username;
+}
+
+export function setStoredUsername(username: string) {
+  if (typeof window === 'undefined') return;
+
+  localStorage.setItem(USERNAME_KEY, username);
+  localStorage.setItem(USERNAME_EXPIRY_KEY, String(Date.now() + SESSION_LENGTH_MS));
+}
+
+export function clearStoredUsername() {
+  if (typeof window === 'undefined') return;
+
+  localStorage.removeItem(USERNAME_KEY);
+  localStorage.removeItem(USERNAME_EXPIRY_KEY);
+}
+
 export async function ensureUsername(): Promise<string | null> {
-  const existing = localStorage.getItem('awo_username');
-  const desired = prompt(
-    existing
-      ? `Your current username is @${existing}. Enter a new unique username to change it, or press Cancel to keep it.`
-      : 'Pick a unique username (at least 3 chars). Keep it private; all responses stay anonymous.'
-  );
+  const existing = getStoredUsername();
+  if (existing) return existing;
 
-  if (desired === null && existing) {
-    return existing;
-  }
-
-  const username = (desired || '').trim().toLowerCase();
-  if (!username) {
-    alert('Username is required.');
-    return null;
-  }
-
-  const response = await fetch('/api/users/claim', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, currentUsername: existing || undefined }),
+  return new Promise((resolve: UsernameResolve) => {
+    window.dispatchEvent(
+      new CustomEvent('awo:open-auth-modal', {
+        detail: { resolve },
+      })
+    );
   });
-
-  const data = await response.json();
-  if (!response.ok) {
-    alert(data.error || 'Could not claim username.');
-    return null;
-  }
-
-  localStorage.setItem('awo_username', data.username);
-  return data.username;
 }

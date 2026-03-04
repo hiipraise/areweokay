@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { Heart, Users, MessageCircle, Gift, Split, Shield } from 'lucide-react'
 import FeatureCard from '@/components/features/FeatureCard'
+import Link from 'next/link'
 
 const features = [
   {
@@ -86,6 +87,14 @@ export default function HomePage() {
             <p className="text-xs text-muted-foreground">
               anonymous
             </p>
+
+            <Link
+              href="/responses"
+              className="mt-2 inline-block rounded-full border px-4 py-2 text-xs text-muted-foreground hover:border-primary/40 hover:text-foreground"
+            >
+              Open responses history
+            </Link>
+
           </motion.div>
         </motion.div>
 
