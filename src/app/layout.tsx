@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider, ThemeToggle } from '@/components/ThemeProvider'
+import UsernameAuthModal from '@/components/UsernameAuthModal'
 
 export const metadata: Metadata = {
   title: 'AreWeOkay - Not every love is forever. Find your truth.',
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider>
           <ThemeToggle />
+          <UsernameAuthModal />
           {children}
         </ThemeProvider>
       </body>
