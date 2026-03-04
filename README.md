@@ -132,8 +132,7 @@ areweokay/
 │   ├── features/               # Feature-specific components
 │   ├── ThemeProvider.tsx       # Theme management
 │   ├── AnalyticsDisplay.tsx    # Analytics counter
-│   ├── GenderSelectionModal.tsx
-│   └── BackgroundAudio.tsx     # Ambient sound
+│   └── GenderSelectionModal.tsx
 ├── lib/
 │   ├── mongodb.ts              # Database connection
 │   ├── utils.ts                # Utility functions
@@ -141,8 +140,7 @@ areweokay/
 ├── models/
 │   ├── Analytics.ts            # Analytics schema
 │   └── Session.ts              # Session schema
-├── public/
-│   └── sounds/                 # Audio files
+├── public/                    # Static assets
 ├── package.json
 ├── tsconfig.json
 ├── tailwind.config.js
@@ -249,10 +247,6 @@ Can also deploy to:
 - DigitalOcean App Platform
 
 ## Configuration
-
-### Audio File
-Place a background audio file at `/public/sounds/ambient.mp3` for the ambient sound feature.
-```
 
 ### Email (Optional)
 If using ZeptoMail for notifications:

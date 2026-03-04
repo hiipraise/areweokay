@@ -3,7 +3,6 @@ import './globals.css'
 import { ThemeProvider, ThemeToggle } from '@/components/ThemeProvider'
 import AnalyticsDisplay from '@/components/AnalyticsDisplay'
 import GenderSelectionModal from '@/components/GenderSelectionModal'
-import BackgroundAudio from '@/components/BackgroundAudio'
 
 export const metadata: Metadata = {
   title: 'AreWeOkay - Not every love is forever. Find your truth.',
@@ -27,7 +26,6 @@ export default function RootLayout({
           <ThemeToggle />
           <AnalyticsDisplay />
           <GenderSelectionModal />
-          <BackgroundAudio />
           {children}
         </ThemeProvider>
       </body>
