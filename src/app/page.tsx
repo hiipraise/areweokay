@@ -10,28 +10,28 @@ const features = [
     description: 'Create personalized questions and discover how well your partner truly knows you.',
     icon: Heart,
     href: '/know-me',
-    enabled: false,
+    enabled: true,
   },
   {
     title: 'Does a Stranger Know Me More?',
     description: 'Compare how your partner\'s answers stack up against strangers. The truth might surprise you.',
     icon: Users,
     href: '/stranger-comparison',
-    enabled: false,
+    enabled: true,
   },
   {
     title: 'What Does It Take to Love You?',
     description: 'Express your deepest feelings and share your heart with someone special.',
     icon: MessageCircle,
     href: '/expression',
-    enabled: false,
+    enabled: true,
   },
   {
     title: 'Your Love Is Appreciated',
     description: 'Send heartfelt appreciation messages to show someone they matter.',
     icon: Gift,
     href: '/appreciation',
-    enabled: false,
+    enabled: true,
   },
   {
     title: 'Break Up, or Forever?',
@@ -105,13 +105,7 @@ export default function HomePage() {
                 />
               </div>
 
-              {/* Coming Soon Label */}
-              {!feature.enabled && (
-                <div className="absolute top-3 right-3 text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground border">
-                  Coming soon
-                </div>
-              )}
-            </div>
+                          </div>
           ))}
         </div>
 
@@ -122,9 +116,7 @@ export default function HomePage() {
           transition={{ delay: 1.4, duration: 0.6 }}
           className="mt-16 text-center"
         >
-          <p className="text-sm text-muted-foreground italic">
-            I rest, I’m working on it.
-          </p>
+          <p className="text-sm text-muted-foreground italic">All features are now live with public anonymous responses.</p>
         </motion.div>
 
       </div>

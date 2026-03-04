@@ -14,10 +14,13 @@ export interface ISession {
   questions: IQuestion[];
   expression?: string;
   appreciationMessage?: string;
+  creatorUsername: string;
   isPublic: boolean;
   responses: {
     partnerId?: string;
+    partnerUsername?: string;
     partnerAnswers?: IQuestion[];
+    strangerUsernames?: string[];
     strangerAnswers?: IQuestion[][];
   };
   createdAt: Date;
@@ -39,15 +42,18 @@ const SessionSchema = new Schema<ISession>({
   }],
   expression: String,
   appreciationMessage: String,
+  creatorUsername: { type: String, required: true, index: true },
   isPublic: { type: Boolean, default: false },
   responses: {
     partnerId: String,
+    partnerUsername: String,
     partnerAnswers: [{
       id: String,
       question: String,
       answer: String,
       answeredBy: String
     }],
+    strangerUsernames: [String],
     strangerAnswers: [[{
       id: String,
       question: String,

@@ -1,7 +1,7 @@
-// src/app/api/session/[id]/answer/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Session from "@/models/Session";
+import User from "@/models/User";
 
 export async function POST(
   request: NextRequest,
@@ -11,7 +11,17 @@ export async function POST(
     await dbConnect();
 
     const { id } = await params;
-    const { answers, answererType } = await request.json();
+    const { answers, answererType, username } = await request.json();
+    const normalizedUsername = String(username || '').trim().toLowerCase();
+
+    if (!normalizedUsername) {
+      return NextResponse.json({ error: 'Username is required' }, { status: 400 });
+    }
+
+    const user = await User.findOne({ username: normalizedUsername });
+    if (!user) {
+      return NextResponse.json({ error: 'Username not found. Claim a username first.' }, { status: 404 });
+    }
 
     const session = await Session.findOne({ sessionId: id });
 
@@ -20,20 +30,22 @@ export async function POST(
     }
 
     if (answererType === "partner") {
+      session.responses.partnerUsername = normalizedUsername;
       session.responses.partnerAnswers = answers;
     } else if (answererType === "stranger") {
       if (!session.responses.strangerAnswers) {
         session.responses.strangerAnswers = [];
       }
+      if (!session.responses.strangerUsernames) {
+        session.responses.strangerUsernames = [];
+      }
+      session.responses.strangerUsernames.push(normalizedUsername);
       session.responses.strangerAnswers.push(answers);
     }
 
     await session.save();
 
-    return NextResponse.json({
-      success: true,
-      message: "Answers submitted successfully",
-    });
+    return NextResponse.json({ success: true, message: "Answers submitted successfully" });
   } catch (error) {
     console.error("Answer submission error:", error);
     return NextResponse.json(
